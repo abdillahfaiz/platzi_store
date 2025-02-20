@@ -73,29 +73,62 @@ class __ContentState extends State<_Content> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final title = titleController.text;
-                  final price = int.parse(priceController.text);
-                  final desc = descController.text;
-                  final categoryId = int.parse(categoryIdController.text);
-                  final images = imagesController.text;
+            Consumer<CreateProductProvider>(
+              builder: (context, state, child) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final title = titleController.text;
+                      final price = int.parse(priceController.text);
+                      final desc = descController.text;
+                      final categoryId = int.parse(categoryIdController.text);
+                      final images = imagesController.text;
 
-                  await context
-                      .read<CreateProductProvider>()
-                      .addProduct(title, price, desc, categoryId, images);
-                },
-                style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-                child: Text(
-                  'Submit',
-                  style: TextStyle(
-                    color: Colors.white,
+                      await context
+                          .read<CreateProductProvider>()
+                          .addProduct(title, price, desc, categoryId, images);
+
+                      if (state.responseCreateProduct != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Text(
+                              'Berhasil menambahkan data',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      } else if (state.errorMessage != '') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(
+                              state.errorMessage,
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Colors.blue)),
+                    child: state.isLoading
+                        ? CircularProgressIndicator()
+                        : Text(
+                            'Submit',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
-                ),
-              ),
+                );
+              },
             )
           ],
         ),

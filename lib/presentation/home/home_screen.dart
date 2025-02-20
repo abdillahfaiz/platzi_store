@@ -66,37 +66,50 @@ class __HomeScreenContentState extends State<_HomeScreenContent> {
             //   });
             // }
 
-            return ListView.separated(
-              itemCount: state.data.length,
-              separatorBuilder: (context, index) {
-                return SizedBox(
-                  height: 16,
-                );
-              },
-              itemBuilder: (context, index) {
-                // simpan dummyData di variable data per index
-                final data = state.data[index];
+            return RefreshIndicator(
+              onRefresh: onRefresh,
+              edgeOffset: 20,
+              backgroundColor: Colors.red,
+              color: Colors.white,
+              child: ListView.separated(
+                itemCount: state.data.length,
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    height: 16,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  // simpan dummyData di variable data per index
+                  final data = state.data[index];
 
-                return ListTile(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/detail-product',
-                        arguments: {'id': data.id, 'title': data.title});
-                  },
-                  leading: Image.network(data.images![0]),
-                  title: Text(
-                    data.title ?? '-',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  return ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/detail-product',
+                        arguments: data,
+                      );
+                    },
+                    leading: Image.network(data.images![0]),
+                    title: Text(
+                      data.title ?? '-',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  subtitle: Text(data.price.toString()),
-                );
-              },
+                    subtitle: Text(data.price.toString()),
+                  );
+                },
+              ),
             );
           }
         },
       ),
     );
+  }
+
+  Future<void> onRefresh() async {
+    await context.read<ProductProvider>().getProducts();
   }
 }
