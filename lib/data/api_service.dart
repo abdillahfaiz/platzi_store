@@ -1,26 +1,93 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
 import 'package:http/http.dart' as http;
 import 'package:platzi_store/data/model/product_model.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://api.escuelajs.co/api/v1';
+  final dio = Dio(BaseOptions(baseUrl: 'https://api.escuelajs.co/api/v1'));
 
   Future<Either<String, List<ProductModel>>> getAllProduct() async {
     try {
-      var response = await http.get(Uri.parse('$baseUrl/products'));
+      var response = await dio.get('/products');
 
-      var data = jsonDecode(response.body) as List<dynamic>;
+      var resData = response.data as List;
 
-      if (response.statusCode == 200) {
-        return Right(
-            data.map((index) => ProductModel.fromJson(index)).toList());
+      return Right(
+        resData
+            .map((itemProductPerIndex) =>
+                ProductModel.fromJson(itemProductPerIndex))
+            .toList(),
+      );
+    } on DioException catch (e) {
+      if (e.response != null) {
+        //! Handle error response from backend
+        return Left('Tidak dapat mengambil data');
       } else {
-        return Left('Gagal Mendapatkan Data');
+        //! Handle error unhandle or Handle undefine error from backend
+        return Left('Terjadi Kesalahan : $e');
       }
-    } catch (e) {
-      return Left('Terjadi Kesalahan, Error : ${e.toString()}');
+    }
+    // try {
+    //   var res = await dio.get('$baseUrl/products');
+
+    //   List resData = res.data;
+
+    //   return Right(
+    //       resData.map((index) => ProductModel.fromJson(index)).toList());
+    // } on DioException catch (e) {
+    //   if (e.response != null) {
+    //     return Left(e.response?.data['message']);
+    //   } else {
+    //     return Left('Terjadi Kesalahan : $e');
+    //   }
+    // }
+  }
+
+  Future<Either<String, ProductModel>> getDetailProduct(int id) async {
+    try {
+      var res = await dio.get('/products/$id');
+
+      var resData = res.data;
+
+      return Right(ProductModel.fromJson(resData));
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return Left(e.response?.data['message']);
+      } else {
+        return Left('Terjadi Kesalahan : $e');
+      }
+    }
+  }
+
+  Future<Either<String, ProductModel>> createNewProduct(String title, int price,
+      String desc, int categoryId, String images) async {
+    try {
+      var response = await dio.post(
+        '/products/',
+        data: {
+          "title": title,
+          "price": price,
+          "description": desc,
+          "categoryId": categoryId,
+          "images": [images]
+        },
+      );
+
+      return Right(ProductModel.fromJson(response.data));
+
+    } on DioException catch (e) {
+      //! error response dari BE
+      // {
+      //   'message' : 'Nama terlalu pende';
+      // }
+
+      if (e.response != null) {
+        return Left(e.response?.data['message']);
+      } else {
+        return Left('Terjadi Kesalahan : $e');
+      }
     }
   }
 }

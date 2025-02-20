@@ -3,7 +3,7 @@ import 'package:platzi_store/data/api_service.dart';
 import 'package:platzi_store/data/model/product_model.dart';
 
 class ProductProvider extends ChangeNotifier {
-  List<ProductModel> data = [];
+  List<ProductModel> data = []; // handle state getProductsData
   bool isLoading = false;
   String errorMessage = '';
 
@@ -22,4 +22,5 @@ class ProductProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
 }
