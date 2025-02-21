@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
-import 'package:http/http.dart' as http;
+import 'package:platzi_store/data/model/login_model.dart';
 import 'package:platzi_store/data/model/product_model.dart';
 
 class ApiService {
@@ -76,7 +74,6 @@ class ApiService {
       );
 
       return Right(ProductModel.fromJson(response.data));
-
     } on DioException catch (e) {
       //! error response dari BE
       // {
@@ -85,6 +82,25 @@ class ApiService {
 
       if (e.response != null) {
         return Left(e.response?.data['message']);
+      } else {
+        return Left('Terjadi Kesalahan : $e');
+      }
+    }
+  }
+
+  Future<Either<String, LoginModel>> login(
+      String email, String password) async {
+    try {
+      var response = await dio.post('/auth/login', data: {
+        "email": email,
+        "password": password,
+      });
+
+      return Right(LoginModel.fromJson(response.data));
+      
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return Left("Email atau Password salah");
       } else {
         return Left('Terjadi Kesalahan : $e');
       }

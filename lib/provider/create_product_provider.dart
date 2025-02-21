@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:platzi_store/data/api_service.dart';
 import 'package:platzi_store/data/model/product_model.dart';
+import 'package:platzi_store/data/service/api_service.dart';
 
 class CreateProductProvider extends ChangeNotifier {
   ProductModel? responseCreateProduct;

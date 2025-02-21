@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:platzi_store/data/api_service.dart';
 import 'package:platzi_store/data/model/product_model.dart';
+
+import '../data/service/api_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<ProductModel> data = []; // handle state getProductsData

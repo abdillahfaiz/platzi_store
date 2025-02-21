@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:platzi_store/core/components/app_button.dart';
 import 'package:platzi_store/core/const/asset_const.dart';
+import 'package:platzi_store/data/service/local_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,21 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // checkToken();
+  }
+
+  //Asumsikan ini adalah splash screen untuk handle apakah token ada atau ngga
+  // void checkToken() async {
+  //   if (await LocalStorage().getToken() != null) {
+  //     Navigator.pushNamed(context, '/home');
+  //   } else {
+  //     Navigator.pushNamed(context, '/');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +103,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       'Recover Password?',
                     ),
                   ),
+                  // Asumsikan button lgootu
+                  // AppButton(
+                  //   label: 'Logout',
+                  //   onPressed: () async {
+                  //     Navigator.pushReplacementNamed(context, '/');
+                  //     await LocalStorage().deleteToken();
+                  //   },
+                  // ),
                   const SizedBox(
                     height: 30.0,
                   ),
@@ -98,7 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         // untuk validasi password dan email tidak boleh kosong
                         if (emailController.text != '' &&
                             passwordController.text != '') {
-
                           //validasi email harus mengandung @
                           if (emailController.text.contains('@')) {
                             Navigator.pushReplacementNamed(context, '/home');
