@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:platzi_store/core/components/app_button.dart';
+import 'package:platzi_store/core/const/string_const.dart';
 import 'package:platzi_store/provider/product_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +36,10 @@ class __HomeScreenContentState extends State<_HomeScreenContent> {
               },
               icon: Icon(Icons.add))
         ],
+      ),
+      bottomNavigationBar: AppButton(
+        label: StringConst.addProduct,
+        onPressed: () {},
       ),
       body: Consumer<ProductProvider>(
         builder: (context, state, child) {
